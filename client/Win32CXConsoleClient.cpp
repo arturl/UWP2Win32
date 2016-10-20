@@ -56,7 +56,7 @@ void sleep_visually(int seconds)
     wprintf(L"\n");
 }
 
-const int sleep_after_connection = 1; // seconds
+const int sleep_after_connection = 30; // seconds
 const int sleep_after_completion = 1; // seconds
 
 int main(Platform::Array<Platform::String^>^ args)
@@ -66,8 +66,13 @@ int main(Platform::Array<Platform::String^>^ args)
     while (1)
     {
         Windows::ApplicationModel::AppService::AppServiceConnection^ newConnection = ref new Windows::ApplicationModel::AppService::AppServiceConnection();
+#if true
+        newConnection->AppServiceName = L"com.microsoft.numbercruncher2";
+        newConnection->PackageFamilyName = L"AppServiceProviderBackgroundApp4-uwp_55b230cc6y9ay";
+#else
         newConnection->AppServiceName = L"com.microsoft.numbercruncher";
         newConnection->PackageFamilyName = L"Microsoft.AppServicesProvider.NumberCruncher_9nthh9tntkkay";
+#endif
 
         create_task(newConnection->OpenAsync()).then([&](task<Windows::ApplicationModel::AppService::AppServiceConnectionStatus> statusTask) {
             auto status = statusTask.get();
