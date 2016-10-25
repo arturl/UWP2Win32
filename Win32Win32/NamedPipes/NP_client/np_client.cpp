@@ -1,7 +1,16 @@
 #include "stdafx.h"
 
-int main()
+int main(int argc, char** argv)
 {
+    char* text;
+    if (argc != 2)
+    {
+        text = "<data>";
+    }
+    else
+    {
+        text = argv[1];
+    }
     HANDLE hPipe;
     DWORD dwWritten;
 
@@ -15,12 +24,23 @@ int main()
     if (hPipe != INVALID_HANDLE_VALUE)
     {
         WriteFile(hPipe,
-            "Hello Pipe\n",
-            12,   // = length of string + terminating '\0' !!!
+            text,
+            strlen(text),
             &dwWritten,
             NULL);
 
         printf("written %d bytes\n", dwWritten);
+
+        char buffer[1024];
+        DWORD dwRead;
+        while (ReadFile(hPipe, buffer, sizeof(buffer) - 1, &dwRead, NULL) != FALSE)
+        {
+            /* add terminating zero */
+            buffer[dwRead] = '\0';
+
+            /* do something with data in buffer */
+            printf("received response '%s'\n", buffer);
+        }
 
         CloseHandle(hPipe);
     }

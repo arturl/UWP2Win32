@@ -117,25 +117,51 @@ int main()
         sa.get_sa());
     if (hPipe != INVALID_HANDLE_VALUE)
     {
-        printf("Waiting for someone to connect...\n");
-        if (ConnectNamedPipe(hPipe, NULL) != FALSE)   // wait for someone to connect to the pipe
+        while (true)
         {
-            printf("Reading data...\n");
-            while (ReadFile(hPipe, buffer, sizeof(buffer) - 1, &dwRead, NULL) != FALSE)
+            printf("Waiting for someone to connect...\n");
+            if (ConnectNamedPipe(hPipe, NULL) != FALSE)
             {
-                /* add terminating zero */
-                buffer[dwRead] = '\0';
+                printf("Reading data...\n");
+                //while (ReadFile(hPipe, buffer, sizeof(buffer) - 1, &dwRead, NULL) != FALSE)
+                BOOL readResult = ReadFile(hPipe, buffer, sizeof(buffer) - 1, &dwRead, NULL);
+                if(readResult)
+                {
+                    /* add terminating zero */
+                    buffer[dwRead] = '\0';
 
-                /* do something with data in buffer */
-                printf("%s", buffer);
+                    /* do something with data in buffer */
+                    printf("Received '%s'\n", buffer);
+
+                    DWORD dwWritten;
+                    for (int i = 0; i < (int)dwRead; ++i)
+                    {
+                        buffer[i] = toupper(buffer[i]);
+                    }
+
+                    BOOL writeResult = WriteFile(hPipe,
+                        buffer,
+                        strlen(buffer),
+                        &dwWritten,
+                        NULL);
+
+                    printf("Response '%s' written\n", buffer);
+
+                    if (!writeResult) {
+                        printf("WriteFile Error %d\n", GetLastError());
+                    }
+
+                }
+                else {
+                    printf("ReadFile Error %d\n", GetLastError());
+                }
             }
+            else
+            {
+                printf("ConnectNamedPipe Error %d\n", GetLastError());
+            }
+            DisconnectNamedPipe(hPipe);
         }
-        else
-        {
-            printf("ConnectNamedPipe Error %d\n", GetLastError());
-        }
-
-        DisconnectNamedPipe(hPipe);
     }
     else
     {
