@@ -6,3 +6,4 @@
 #include <tchar.h>
 #include <Windows.h>
 #include <conio.h>
+#include <aclapi.h>

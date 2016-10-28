@@ -12,10 +12,8 @@
             <Button x:Name="buttonStart" Content="Start Proxy" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="button_Click_Start"/>
             <TextBox x:Name="textBox" TextWrapping="Wrap" Text="data" VerticalAlignment="Top"/>
             <Button x:Name="buttonSend" Content="Send" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="button_Click_Send"/>
-            <Button x:Name="buttonReceive" Content="Receive" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="button_Click_Receive"/>
             <TextBlock x:Name="textBlock" TextWrapping="Wrap" HorizontalAlignment="Stretch" Text="Received:"/>
             <TextBlock x:Name="textBlockReceived" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text=""/>
-            <Button x:Name="buttonClose" Content="Close" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="button_Click_Close"/>
         </StackPanel>
     </Grid>
 </Page>
