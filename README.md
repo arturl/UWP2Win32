@@ -2,7 +2,9 @@
 
 **Testing UWP-Win32 interaction**
 
-UWP process `proto.exe` talks to Win32 process `comm-proxy.exe` by launching it (`ProcessLauncher` API) and streaming data into its input stream. When `comm-proxy.exe` receives data, it then writes it into a named pipe set up by the `admin-process.exe`.
+UWP process `proto.exe` talks to Win32 process `comm-proxy.exe` by launching it (`ProcessLauncher` API) and streaming data into its input stream. When `comm-proxy.exe` receives data, it then writes it into a named pipe set up by the `admin-process.exe`. The `admin-process.exe` responds via the named pipe, after which `proto.exe` replies back to the UWP app.
+
+![](design.png)
 
 ## How to set up
 
