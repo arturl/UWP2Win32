@@ -5,23 +5,24 @@
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:iot="http://schemas.microsoft.com/appx/manifest/iot/windows10"
-  IgnorableNamespaces="uap mp iot">
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+  IgnorableNamespaces="uap mp iot uap3">
 
   <Identity
-    Name="aa181bc4-e9e2-426c-a6b3-519ea06a33a0"
-    Publisher="CN=arturl"
+    Name="Microsoft.AppServicesProvider.EchoService"
+    Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="aa181bc4-e9e2-426c-a6b3-519ea06a33a0" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>proto</DisplayName>
-    <PublisherDisplayName>arturl</PublisherDisplayName>
+    <PublisherDisplayName>Microsoft Corporation</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
+      <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.14393.0" MaxVersionTested="10.0.14393.0" />
   </Dependencies>
 
   <Resources>
@@ -41,6 +42,12 @@
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
+      <Extensions>
+        <!--<uap:Extension Category="windows.appService" EntryPoint="AppServiceProvider.EchoService"> -->
+        <uap:Extension Category="windows.appService">
+          <uap3:AppService Name="com.microsoft.echo" SupportsRemoteSystems="true"/>
+        </uap:Extension>
+      </Extensions>
     </Application>
   </Applications>
 

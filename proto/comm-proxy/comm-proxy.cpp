@@ -1,54 +1,42 @@
 #include "stdafx.h"
+#include "app-service-client.h"
 
 #define BUFSIZE 4096
 
 char buffer[BUFSIZE];
+char buffer_from_admin[BUFSIZE];
 
-void signal_data_ready(char* directory)
-{
-    if (directory == nullptr) return;
-    char fullfile[MAX_PATH] = { 0 };
-    strcat_s(fullfile, directory);
-    strcat_s(fullfile, "\\sync.dat");
-    FILE *fp = fopen(fullfile, "w+");
-    fclose(fp);
-}
+wchar_t wbuffer[BUFSIZE];
 
-int main(int argc, char **argv)
+uint32_t send_data_to_admin(char* request, uint32_t request_len, char* response, uint32_t max_response_len);
+
+int main(Platform::Array<Platform::String^>^ args)
 {
     auto stdinHandle = GetStdHandle(STD_INPUT_HANDLE);
 
-    char* signal_directory = nullptr;
-
-    if (argc == 2)
-    {
-        signal_directory = argv[1];
-    }
-
     while (1)
     {
-        DWORD dwRead;
-        BOOL bSuccess = ReadFile(stdinHandle, buffer, BUFSIZE, &dwRead, NULL);
+        DWORD read_from_stdin;
+        BOOL bSuccess = ReadFile(stdinHandle, buffer, BUFSIZE, &read_from_stdin, NULL);
 
-        if (!bSuccess || dwRead == 0)
+        if (!bSuccess || read_from_stdin == 0)
         {
-            printf("end of stream! bSuccess=%d, dwRead=%d\n", bSuccess, dwRead);
+            printf("end of stream! bSuccess=%d, dwRead=%d\n", bSuccess, read_from_stdin);
             _flushall();
             break;
         }
         else
         {
-            // Sleep(10*1000);
-            buffer[dwRead] = '\0';
-            printf("echo: %s\n", buffer);
+            buffer[read_from_stdin] = '\0';
+            printf("received: %s\n", buffer);
             _flushall();
-            signal_data_ready(signal_directory);
+
+            uint32 read_from_admin = send_data_to_admin(buffer, read_from_stdin, buffer_from_admin, BUFSIZE);
+
+            int chars_converted = MultiByteToWideChar(CP_ACP, 0, buffer_from_admin, read_from_admin, wbuffer, BUFSIZE);
+
+            send_data_to_UWP_app(wbuffer, chars_converted, L"com.microsoft.echo", L"Microsoft.AppServicesProvider.EchoService_8wekyb3d8bbwe");
         }
     }
-
-    printf("finished, hit enter: ");
-    _getch();
-
-    return 0;
 }
 
